@@ -25,9 +25,6 @@ ionic cap sync android
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
-
-Feel free to reach out if you need any assistance or have any questions related to this plugin.
-
 ### requestPermissions()
 
 ```typescript
