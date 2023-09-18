@@ -25,6 +25,9 @@ ionic cap sync android
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
+
+Feel free to reach out if you need any assistance or have any questions related to this plugin.
+
 ### requestPermissions()
 
 ```typescript
@@ -91,4 +94,20 @@ disconnect() => Promise<void>
 | **`device_address`** | <code>string</code> |
 
 </docgen-api>
-"# capacitor-plugin-printer" 
+
+
+## Contact Information
+For custom configuration, tech support, or additional developer work related to this plugin, you can contact:
+
+### Name: Paul Obunga
+
+#### Hourly Rate: $15-20/Hr
+
+#### Quick Support & Consultation: $500
+
+#### Port to Flutter, React Native, Cordova: $500
+
+#### Additional Features: Refer to hourly rate
+
+Contact Details: Paul Obunga's Linktree
+<a href="https://linktr.ee/paulobunga">Contact Infomation </a>
