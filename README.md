@@ -1,11 +1,11 @@
-# capacitor-plugin-printer
+# Ionic Capacitor Printer Plugin
 
-Printer Plugin For Capacitor
+Ionic Plugin For Self Service Point Of Sale Systems
 
 ## Install
 
 ```bash
-npm install @paulobunga/capacitor-plugin-printer
+npm i ionic-plugin-printer-by-paulobunga
 ionic cap sync android
 ```
 
