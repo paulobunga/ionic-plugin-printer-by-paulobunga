@@ -29,6 +29,9 @@ import com.getcapacitor.annotation.Permission;
 import com.printer.sdk.PrinterInstance;
 import com.printer.sdk.usb.USBPort;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -183,7 +186,8 @@ public class PrinterPlugin extends Plugin {
 
     @PluginMethod
     public void print(PluginCall call) {
-        String content = call.getString("content");
+        // Get the JSON content as a string from the JavaScript side
+        String contentString = call.getString("content");
 
         if (printer == null || !isConnected) {
             // Handle the case where the printer is not connected
@@ -192,18 +196,101 @@ public class PrinterPlugin extends Plugin {
         }
 
         try {
+            // Parse the JSON content string into a JSON object
+            JSONObject contentJson = new JSONObject(contentString);
+
+            // Extract the data needed for printing
+            String orderNum = contentJson.getString("orderNum");
+            String total = contentJson.getString("total");
+            String type = contentJson.getString("type");
+            String paiementType = contentJson.getString("paiementType");
+            String notes = contentJson.getString("notes");
+            String company = contentJson.getString("company");
+            String address = contentJson.getString("address");
+            String tel = contentJson.getString("tel");
+            String date = contentJson.getString("date");
+            String hour = contentJson.getString("hour");
+
+            // Process and print the extracted data
             printer.initPrinter();
             printer.setFont(0, 0, 0, 0, 0);
             printer.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
-            printer.printText(content);
+
+            // Company Name
+            printer.setFont(0, 0, 0, 1, 0);
+            printer.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+            printer.printText(company);
+            printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
+
+            // Company Address
+            printer.setFont(0, 0, 0, 0, 0);
+            printer.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+            printer.printText(address);
+            printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
+
+            // Order Number
+            printer.setFont(0, 0, 0, 1, 0);
+            printer.setPrinter(Command.ALIGN, Command.ALIGN_CENTER);
+            printer.printText(orderNum);
+            printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 3);
+
+            // Date with bottom underline
+            printer.setFont(0, 0, 0, 0, 1);
+            // printer.sendBytesData(new byte[] { (byte) 0x1C, (byte) 0x21, (byte) 0x80 });
+            printer.printText(date + " " + hour);
+            printer.sendBytesData(new byte[] { (byte) 0x1C, (byte) 0x21, (byte) 0x00 });
+            printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
+
+            // Add Table for receipt items using Table Class
+
+
+            // Underline Top
+            printer.setFont(0, 0, 0, 0, 1);
+            printer.sendBytesData(new byte[] { (byte) 0x1C, (byte) 0x21, (byte) 0x80 });
+            // printer.printText("-----------------------");
+            printer.sendBytesData(new byte[] { (byte) 0x1C, (byte) 0x21, (byte) 0x00 });
+            printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
+
+            // Total Will Go here
+            StringBuilder totalBuilder = new StringBuilder();
+            totalBuilder.append("TOTAL :").append(total).append("\n");
+
+            printer.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
+            printer.setFont(0, 0, 0, 1, 0);
+            printer.printText(totalBuilder.toString());
+            printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
+
+            // Underline Top
+            printer.setFont(0, 0, 0, 0, 1);
+            printer.sendBytesData(new byte[] { (byte) 0x1C, (byte) 0x21, (byte) 0x80 });
+            // printer.printText("-----------------------");
+            printer.sendBytesData(new byte[] { (byte) 0x1C, (byte) 0x21, (byte) 0x00 });
+            printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 3);
+
+
+            // Bottom Section
+            StringBuilder bottomBuilder = new StringBuilder();
+            bottomBuilder.append("Type: ").append(type).append("\n");
+            bottomBuilder.append("Type de paiement: ").append(paiementType).append("\n");
+            bottomBuilder.append("Notes: ").append(notes).append("\n");
+
+            printer.setFont(0, 0, 0, 0, 0);
+            printer.setPrinter(Command.ALIGN, Command.ALIGN_LEFT);
+            printer.printText(bottomBuilder.toString());
             printer.setPrinter(Command.PRINT_AND_WAKE_PAPER_BY_LINE, 3);
             printer.cutPaper(66, 50);
+
             call.resolve();
+        } catch (JSONException e) {
+            // Handle JSON parsing errors
+            call.reject("JSON parsing error: " + e.getMessage());
         } catch (Exception e) {
             // Handle printing errors
             call.reject("Printing failed: " + e.getMessage());
         }
     }
+
+
 
     @PluginMethod
     public void disconnect(PluginCall call) {

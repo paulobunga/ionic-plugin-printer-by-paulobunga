@@ -1,6 +1,6 @@
 {
   "name": "ionic-plugin-printer-by-paulobunga",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Ionic Plugin For Self Service Point Of Sale Systems",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
